@@ -30,8 +30,9 @@ void main() {
     });
 
     test('lets ApiException propagate', () {
-      when(() => api.fetchPopularMovies())
-          .thenThrow(const ApiException('Request failed (401)'));
+      when(() => api.fetchPopularMovies()).thenAnswer(
+        (_) async => throw const ApiException('Request failed (401)'),
+      );
 
       expect(repository.getPopularMovies(), throwsA(isA<ApiException>()));
     });
@@ -53,7 +54,7 @@ void main() {
 
     test('lets ApiException propagate', () {
       when(() => api.fetchTrailerKey(any()))
-          .thenThrow(const ApiException('Network error'));
+          .thenAnswer((_) async => throw const ApiException('Network error'));
 
       expect(repository.getTrailerKey(1), throwsA(isA<ApiException>()));
     });
