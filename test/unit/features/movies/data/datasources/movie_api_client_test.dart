@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:movies_flutter_module/core/config/app_config.dart';
+import 'package:movies_flutter_module/core/network/api_exception.dart';
 import 'package:movies_flutter_module/features/movies/data/datasources/movie_api_client.dart';
 import 'package:movies_flutter_module/features/movies/data/models/paged_movies.dart';
 
@@ -151,6 +152,31 @@ void main() {
       ).thenAnswer((_) async => throw _badResponse('/movie/1/videos', 500));
 
       expect(api.fetchTrailerKey(1), throwsA(isA<ApiException>()));
+    });
+
+    test('maps a connection error to a friendly message', () async {
+      when(
+        () => dio.get<Map<String, dynamic>>(
+          any(),
+          queryParameters: any(named: 'queryParameters'),
+        ),
+      ).thenAnswer(
+        (_) async => throw DioException(
+          requestOptions: RequestOptions(path: '/movie/popular'),
+          type: DioExceptionType.connectionError,
+        ),
+      );
+
+      expect(
+        api.fetchPopularMovies(),
+        throwsA(
+          isA<ApiException>().having(
+            (e) => e.message,
+            'message',
+            'No connection. Please check your internet.',
+          ),
+        ),
+      );
     });
   });
 }

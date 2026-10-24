@@ -49,8 +49,6 @@ class MoviesBloc extends Bloc<MoviesEvent, MoviesState> {
     emit(current.copyWith(isLoadingMore: true, loadMoreFailed: false));
     try {
       final result = await repository.getPopularMovies(page: current.page + 1);
-      // TMDB's popular list can shift between requests, so a movie may
-      // show up on two pages. Skip the ones we already have.
       final knownIds = current.movies.map((m) => m.id).toSet();
       final fresh = result.movies.where((m) => !knownIds.contains(m.id));
       emit(

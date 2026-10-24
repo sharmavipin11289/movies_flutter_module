@@ -1,15 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:movies_flutter_module/core/config/app_config.dart';
+import 'package:movies_flutter_module/core/network/api_exception.dart';
 import 'package:movies_flutter_module/features/movies/data/models/paged_movies.dart';
-
-class ApiException implements Exception {
-  const ApiException(this.message);
-
-  final String message;
-
-  @override
-  String toString() => 'ApiException: $message';
-}
 
 class MovieApiClient {
   MovieApiClient({required this.dio, required this.config});
@@ -52,10 +44,22 @@ class MovieApiClient {
     } on DioException catch (e) {
       final status = e.response?.statusCode;
       throw ApiException(
-        status != null
-            ? 'Request failed ($status)'
-            : 'Network error: ${e.message ?? e.type.name}',
+        status != null ? 'Request failed ($status)' : _networkMessage(e.type),
       );
+    }
+  }
+
+  String _networkMessage(DioExceptionType type) {
+    switch (type) {
+      case DioExceptionType.connectionTimeout:
+      case DioExceptionType.sendTimeout:
+      case DioExceptionType.receiveTimeout:
+        return 'Request timed out. Please try again.';
+      case DioExceptionType.connectionError:
+      case DioExceptionType.unknown:
+        return 'No connection. Please check your internet.';
+      default:
+        return 'Something went wrong. Please try again.';
     }
   }
 }

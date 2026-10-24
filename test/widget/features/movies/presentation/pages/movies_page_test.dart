@@ -103,4 +103,84 @@ void main() {
 
     expect(tapped, movies[1]);
   });
+
+  group('pagination', () {
+    final manyMovies = List.generate(
+      30,
+      (i) => Movie(id: i, title: 'Movie $i', overview: 'Overview $i'),
+    );
+
+    testWidgets('requests the next page when scrolled near the end', (
+      tester,
+    ) async {
+      when(() => bloc.state).thenReturn(MoviesLoaded(manyMovies));
+
+      await pumpPage(tester);
+      await tester.drag(find.byType(ListView), const Offset(0, -10000));
+      await tester.pump();
+
+      verify(() => bloc.add(const FetchNextPage())).called(greaterThan(0));
+    });
+
+    testWidgets('does not request more when hasReachedMax is true', (
+      tester,
+    ) async {
+      when(() => bloc.state)
+          .thenReturn(MoviesLoaded(manyMovies, hasReachedMax: true));
+
+      await pumpPage(tester);
+      await tester.drag(find.byType(ListView), const Offset(0, -10000));
+      await tester.pump();
+
+      verifyNever(() => bloc.add(const FetchNextPage()));
+    });
+
+    testWidgets('does not request more while a page is loading', (
+      tester,
+    ) async {
+      when(() => bloc.state)
+          .thenReturn(MoviesLoaded(manyMovies, isLoadingMore: true));
+
+      await pumpPage(tester);
+      await tester.drag(find.byType(ListView), const Offset(0, -10000));
+      await tester.pump();
+
+      verifyNever(() => bloc.add(const FetchNextPage()));
+    });
+
+    testWidgets('shows a spinner at the bottom while loading more', (
+      tester,
+    ) async {
+      when(() => bloc.state)
+          .thenReturn(const MoviesLoaded(movies, isLoadingMore: true));
+
+      await pumpPage(tester);
+
+      expect(find.byType(CircularProgressIndicator), findsOneWidget);
+      expect(find.byType(MovieCard), findsNWidgets(2));
+    });
+
+    testWidgets('shows an error row with Retry when loading more failed', (
+      tester,
+    ) async {
+      when(() => bloc.state)
+          .thenReturn(const MoviesLoaded(movies, loadMoreFailed: true));
+
+      await pumpPage(tester);
+
+      expect(find.text('Could not load more movies'), findsOneWidget);
+      expect(find.text('Retry'), findsOneWidget);
+      expect(find.byType(MovieCard), findsNWidgets(2));
+    });
+
+    testWidgets('Retry in the footer adds FetchNextPage', (tester) async {
+      when(() => bloc.state)
+          .thenReturn(const MoviesLoaded(movies, loadMoreFailed: true));
+
+      await pumpPage(tester);
+      await tester.tap(find.text('Retry'));
+
+      verify(() => bloc.add(const FetchNextPage())).called(1);
+    });
+  });
 }

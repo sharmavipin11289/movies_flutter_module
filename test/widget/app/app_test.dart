@@ -48,7 +48,8 @@ void main() {
   testWidgets('tapping a movie fetches its trailer and opens it natively', (
     tester,
   ) async {
-    when(() => repository.getPopularMovies()).thenAnswer((_) async => movies);
+    when(() => repository.getPopularMovies(page: 1))
+        .thenAnswer((_) async => firstPage);
     when(() => repository.getTrailerKey(2)).thenAnswer((_) async => 'key2');
 
     await tester.pumpWidget(

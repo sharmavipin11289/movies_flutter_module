@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
+import 'package:movies_flutter_module/core/network/api_exception.dart';
 import 'package:movies_flutter_module/features/movies/data/models/movie.dart';
 import 'package:movies_flutter_module/features/movies/data/datasources/movie_api_client.dart';
 import 'package:movies_flutter_module/features/movies/data/models/paged_movies.dart';
