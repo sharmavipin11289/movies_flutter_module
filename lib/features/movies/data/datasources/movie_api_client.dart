@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:movies_flutter_module/core/config/app_config.dart';
-import 'package:movies_flutter_module/data/models/movie.dart';
+import 'package:movies_flutter_module/features/movies/data/models/movie.dart';
 
 class ApiException implements Exception {
   const ApiException(this.message);

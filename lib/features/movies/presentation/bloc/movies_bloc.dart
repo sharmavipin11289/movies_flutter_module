@@ -1,8 +1,8 @@
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:movies_flutter_module/data/models/movie.dart';
-import 'package:movies_flutter_module/data/movie_api_client.dart';
-import 'package:movies_flutter_module/data/movie_repository.dart';
+import 'package:movies_flutter_module/features/movies/data/models/movie.dart';
+import 'package:movies_flutter_module/features/movies/data/datasources/movie_api_client.dart';
+import 'package:movies_flutter_module/features/movies/data/repositories/movie_repository.dart';
 
 part 'movies_event.dart';
 part 'movies_state.dart';

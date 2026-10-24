@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:movies_flutter_module/data/models/movie.dart';
-import 'package:movies_flutter_module/data/movie_api_client.dart';
-import 'package:movies_flutter_module/data/movie_repository.dart';
+import 'package:movies_flutter_module/features/movies/data/models/movie.dart';
+import 'package:movies_flutter_module/features/movies/data/datasources/movie_api_client.dart';
+import 'package:movies_flutter_module/features/movies/data/repositories/movie_repository.dart';
 
 class MockMovieApiClient extends Mock implements MovieApiClient {}
 

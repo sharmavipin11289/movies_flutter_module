@@ -1,5 +1,5 @@
-import 'package:movies_flutter_module/data/models/movie.dart';
-import 'package:movies_flutter_module/data/movie_api_client.dart';
+import 'package:movies_flutter_module/features/movies/data/models/movie.dart';
+import 'package:movies_flutter_module/features/movies/data/datasources/movie_api_client.dart';
 
 /// Single entry point for movie data. The Bloc depends on this, not on Dio.
 class MovieRepository {

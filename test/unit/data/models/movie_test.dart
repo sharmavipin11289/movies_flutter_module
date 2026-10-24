@@ -1,5 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:movies_flutter_module/data/models/movie.dart';
+import 'package:movies_flutter_module/features/movies/data/models/movie.dart';
 
 void main() {
   group('Movie.fromJson', () {

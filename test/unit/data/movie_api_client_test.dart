@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:movies_flutter_module/core/config/app_config.dart';
-import 'package:movies_flutter_module/data/movie_api_client.dart';
+import 'package:movies_flutter_module/features/movies/data/datasources/movie_api_client.dart';
 
 class MockDio extends Mock implements Dio {}
 
