@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:movies_flutter_module/core/config/app_config.dart';
-import 'package:movies_flutter_module/features/movies/data/models/movie.dart';
+import 'package:movies_flutter_module/features/movies/data/models/paged_movies.dart';
 
 class ApiException implements Exception {
   const ApiException(this.message);
@@ -17,12 +17,9 @@ class MovieApiClient {
   final Dio dio;
   final AppConfig config;
 
-  Future<List<Movie>> fetchPopularMovies() async {
-    final json = await _get('/movie/popular');
-    final results = json['results'] as List<dynamic>? ?? [];
-    return results
-        .map((e) => Movie.fromJson(e as Map<String, dynamic>))
-        .toList();
+  Future<PagedMovies> fetchPopularMovies({int page = 1}) async {
+    final json = await _get('/movie/popular', queryParameters: {'page': page});
+    return PagedMovies.fromJson(json);
   }
 
   /// Returns the YouTube key of the first trailer, or null if none exists.
@@ -38,11 +35,14 @@ class MovieApiClient {
     return null;
   }
 
-  Future<Map<String, dynamic>> _get(String path) async {
+  Future<Map<String, dynamic>> _get(
+    String path, {
+    Map<String, dynamic> queryParameters = const {},
+  }) async {
     try {
       final response = await dio.get<Map<String, dynamic>>(
         path,
-        queryParameters: {'api_key': config.tmdbApiKey},
+        queryParameters: {'api_key': config.tmdbApiKey, ...queryParameters},
       );
       final data = response.data;
       if (data == null) {

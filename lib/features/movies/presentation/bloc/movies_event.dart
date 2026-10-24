@@ -10,3 +10,7 @@ sealed class MoviesEvent extends Equatable {
 final class FetchMovies extends MoviesEvent {
   const FetchMovies();
 }
+
+final class FetchNextPage extends MoviesEvent {
+  const FetchNextPage();
+}
