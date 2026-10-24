@@ -1,7 +1,7 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:movies_flutter_module/bloc/movies/movies_bloc.dart';
+import 'package:movies_flutter_module/features/movies/presentation/bloc/movies_bloc.dart';
 import 'package:movies_flutter_module/data/models/movie.dart';
 import 'package:movies_flutter_module/data/movie_api_client.dart';
 import 'package:movies_flutter_module/data/movie_repository.dart';
