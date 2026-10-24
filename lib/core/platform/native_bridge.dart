@@ -1,9 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
-/// Talks to the host (native) app over a [MethodChannel].
-///
-/// The channel name must be identical in the Android and iOS host apps.
 class NativeBridge {
   NativeBridge({MethodChannel? channel})
     : _channel = channel ?? const MethodChannel(channelName);
