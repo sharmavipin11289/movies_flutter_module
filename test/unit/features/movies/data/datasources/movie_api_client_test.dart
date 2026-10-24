@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:movies_flutter_module/core/config/app_config.dart';
 import 'package:movies_flutter_module/features/movies/data/datasources/movie_api_client.dart';
+import 'package:movies_flutter_module/features/movies/data/models/paged_movies.dart';
 
 class MockDio extends Mock implements Dio {}
 
@@ -36,35 +37,51 @@ void main() {
   });
 
   group('fetchPopularMovies', () {
-    test(
-      'returns parsed movies and calls the right path with the api key',
-      () async {
-        when(
-          () => dio.get<Map<String, dynamic>>(
-            '/movie/popular',
-            queryParameters: keyParams,
-          ),
-        ).thenAnswer(
-          (_) async => _ok('/movie/popular', {
-            'results': [
-              {'id': 1, 'title': 'A', 'overview': 'a', 'poster_path': '/a.jpg'},
-              {'id': 2, 'title': 'B', 'overview': 'b', 'poster_path': null},
-            ],
-          }),
-        );
+    test('returns a parsed page and sends page=1 by default', () async {
+      when(
+        () => dio.get<Map<String, dynamic>>(
+          '/movie/popular',
+          queryParameters: {'api_key': 'test-key', 'page': 1},
+        ),
+      ).thenAnswer(
+        (_) async => _ok('/movie/popular', {
+          'page': 1,
+          'total_pages': 3,
+          'results': [
+            {'id': 1, 'title': 'A', 'overview': 'a', 'poster_path': '/a.jpg'},
+            {'id': 2, 'title': 'B', 'overview': 'b', 'poster_path': null},
+          ],
+        }),
+      );
 
-        final movies = await api.fetchPopularMovies();
+      final result = await api.fetchPopularMovies();
 
-        expect(movies.length, 2);
-        expect(movies.first.title, 'A');
-        verify(
-          () => dio.get<Map<String, dynamic>>(
-            '/movie/popular',
-            queryParameters: keyParams,
-          ),
-        ).called(1);
-      },
-    );
+      expect(result.movies.length, 2);
+      expect(result.movies.first.title, 'A');
+      expect(result.page, 1);
+      expect(result.totalPages, 3);
+    });
+
+    test('sends the requested page number', () async {
+      when(
+        () => dio.get<Map<String, dynamic>>(
+          '/movie/popular',
+          queryParameters: {'api_key': 'test-key', 'page': 3},
+        ),
+      ).thenAnswer(
+        (_) async => _ok('/movie/popular', {
+          'page': 3,
+          'total_pages': 3,
+          'results': <dynamic>[],
+        }),
+      );
+
+      final result = await api.fetchPopularMovies(page: 3);
+
+      expect(result, isA<PagedMovies>());
+      expect(result.page, 3);
+      expect(result.hasMore, isFalse);
+    });
 
     test('throws ApiException on a bad status code', () async {
       when(

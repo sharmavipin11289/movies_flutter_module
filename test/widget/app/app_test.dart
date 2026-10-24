@@ -4,6 +4,7 @@ import 'package:movies_flutter_module/app/app.dart';
 import 'package:movies_flutter_module/core/platform/native_bridge.dart';
 import 'package:movies_flutter_module/features/movies/data/models/movie.dart';
 import 'package:movies_flutter_module/features/movies/data/repositories/movie_repository.dart';
+import 'package:movies_flutter_module/features/movies/data/models/paged_movies.dart';
 
 class MockMovieRepository extends Mock implements MovieRepository {}
 
@@ -17,7 +18,7 @@ void main() {
     Movie(id: 1, title: 'Movie A', overview: 'Overview A'),
     Movie(id: 2, title: 'Movie B', overview: 'Overview B'),
   ];
-
+  const firstPage = PagedMovies(movies: movies, page: 1, totalPages: 1);
   setUp(() {
     repository = MockMovieRepository();
     bridge = MockNativeBridge();
@@ -31,7 +32,8 @@ void main() {
   });
 
   testWidgets('loads and shows the movies on start', (tester) async {
-    when(() => repository.getPopularMovies()).thenAnswer((_) async => movies);
+    when(() => repository.getPopularMovies(page: 1))
+        .thenAnswer((_) async => firstPage);
 
     await tester.pumpWidget(
       MoviesApp(repository: repository, bridge: bridge, hasApiKey: true),
@@ -74,6 +76,6 @@ void main() {
     await tester.pump();
 
     expect(find.textContaining('TMDB API key'), findsOneWidget);
-    verifyNever(() => repository.getPopularMovies());
+    verifyNever(() => repository.getPopularMovies(page: any(named: 'page')));
   });
 }
