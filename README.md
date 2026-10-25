@@ -11,9 +11,9 @@ State management uses the **Bloc** pattern. The code was built test-first (TDD).
 
 | Repo | Link |
 |---|---|
-| Flutter module (this repo) | `<module-repo-url>` |
+| Flutter module (this repo) | `https://github.com/sharmavipin11289/movies_flutter_module.git` |
 | Android host app | `<android-repo-url>` |
-| iOS host app (SwiftUI) | `<ios-repo-url>` |
+| iOS host app (SwiftUI) | `https://github.com/sharmavipin11289/movies_ios_app.git` |
 
 The host apps reference this module by relative path, so clone all repos
 **side by side** in the same parent folder:
